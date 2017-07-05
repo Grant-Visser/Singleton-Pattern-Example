@@ -6,10 +6,11 @@ using System.Threading.Tasks;
 
 namespace Singleton_Pattern_Example
 {
-    //Good lord. This is not thread safe.
+    //Threadsafe
     class Singleton
     {
         private static Singleton uniqueSingleton;
+        private static object syncRoot = new object();
 
         private Singleton()
         {
@@ -19,14 +20,20 @@ namespace Singleton_Pattern_Example
         {
             if (uniqueSingleton == null)
             {
-                uniqueSingleton= new Singleton();
+                lock (syncRoot)
+                {
+                    if (uniqueSingleton == null)
+                    {
+                        uniqueSingleton = new Singleton();
+                    }
+                }
             }
             return uniqueSingleton;
         }
 
         public string GetDescription()
         {
-            return "I'm a singleton";
+            return "I'm a threadsafe singleton";
         }
     }
 }
